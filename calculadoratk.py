@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 
 # Base de datos simulada (componentes y enlaces)
 components_database = {
@@ -30,35 +30,66 @@ components_database = {
     }
 }
 
-# Función para calcular costo
+# Función para calcular el costo del dispositivo seleccionado
 def calcular_costo():
     dispositivo = dispositivo_var.get().lower()
+    
     if dispositivo in components_database:
         total = 0
         componentes = components_database[dispositivo]
-        resultado = f"Componentes de {dispositivo.capitalize()}:\n"
+        componentes_text = ""
+        
         for componente, (precio, _) in componentes.items():
-            resultado += f"{componente}: ${precio}\n"
+            componentes_text += f"{componente}: ${precio}\n"
             total += precio
-        resultado += f"\nCosto total: ${total}"
-        messagebox.showinfo("Costo Total", resultado)
+        
+        resultado_label.config(text=f"Componentes de {dispositivo.capitalize()}:\n{componentes_text}\nCosto total: ${total}")
+        
+        comprar_button.config(state=tk.NORMAL)  # Habilitar botón de compra
     else:
-        messagebox.showerror("Error", "Dispositivo no encontrado")
+        messagebox.showerror("Error", "El dispositivo no está en la base de datos")
+
+# Función para mostrar los enlaces de compra
+def mostrar_enlaces():
+    dispositivo = dispositivo_var.get().lower()
+    
+    if dispositivo in components_database:
+        enlaces_text = ""
+        for componente, (_, link) in components_database[dispositivo].items():
+            enlaces_text += f"{componente}: {link}\n"
+        
+        messagebox.showinfo("Enlaces de Compra", enlaces_text)
 
 # Crear ventana principal
 root = tk.Tk()
 root.title("Calculadora de Costos Electrónicos")
 
-# Elementos de la ventana
+# Etiqueta de título
+titulo_label = tk.Label(root, text="Calculadora de Costos Electrónicos", font=("Helvetica", 16))
+titulo_label.pack(pady=10)
+
+# Menú desplegable para seleccionar dispositivo
 dispositivo_var = tk.StringVar()
-label = tk.Label(root, text="Selecciona el dispositivo")
-label.pack(pady=10)
+dispositivo_var.set("Selecciona un dispositivo")  # Valor por defecto
 
-dispositivo_entry = tk.Entry(root, textvariable=dispositivo_var)
-dispositivo_entry.pack(pady=10)
+dispositivo_label = tk.Label(root, text="Selecciona un dispositivo:")
+dispositivo_label.pack()
 
+dispositivo_menu = ttk.Combobox(root, textvariable=dispositivo_var)
+dispositivo_menu['values'] = ['Telefono', 'Laptop', 'Televisor']  # Opciones
+dispositivo_menu.pack(pady=5)
+
+# Botón para calcular el costo
 calcular_button = tk.Button(root, text="Calcular Costo", command=calcular_costo)
 calcular_button.pack(pady=10)
+
+# Label para mostrar los componentes y el costo total
+resultado_label = tk.Label(root, text="", justify="left")
+resultado_label.pack(pady=10)
+
+# Botón para mostrar enlaces de compra (deshabilitado hasta que se calcule)
+comprar_button = tk.Button(root, text="Mostrar Enlaces de Compra", state=tk.DISABLED, command=mostrar_enlaces)
+comprar_button.pack(pady=10)
 
 # Ejecutar la ventana
 root.mainloop()
