@@ -1,29 +1,29 @@
-# Base de datos simulada (ejemplo con algunos componentes)
+# Base de datos simulada (ejemplo con algunos componentes y enlaces de compra)
 components_database = {
     'telefono': {
-        'Pantalla': 50.0,  # precio en USD
-        'Batería': 20.0,
-        'Cámara': 35.0,
-        'Procesador': 100.0,
-        'Memoria RAM': 30.0,
-        'Almacenamiento': 40.0
+        'Pantalla': (50.0, 'https://www.mercadolibre.com.ve/pantalla-telefono'),
+        'Batería': (20.0, 'https://www.mercadolibre.com.ve/bateria-telefono'),
+        'Cámara': (35.0, 'https://www.mercadolibre.com.ve/camara-telefono'),
+        'Procesador': (100.0, 'https://www.mercadolibre.com.ve/procesador-telefono'),
+        'Memoria RAM': (30.0, 'https://www.mercadolibre.com.ve/ram-telefono'),
+        'Almacenamiento': (40.0, 'https://www.mercadolibre.com.ve/almacenamiento-telefono')
     },
     'laptop': {
-        'Pantalla': 150.0,
-        'Teclado': 25.0,
-        'Batería': 60.0,
-        'Procesador': 200.0,
-        'Memoria RAM': 80.0,
-        'Almacenamiento SSD': 120.0,
-        'Tarjeta Gráfica': 300.0
+        'Pantalla': (150.0, 'https://www.mercadolibre.com.ve/pantalla-laptop'),
+        'Teclado': (25.0, 'https://www.mercadolibre.com.ve/teclado-laptop'),
+        'Batería': (60.0, 'https://www.mercadolibre.com.ve/bateria-laptop'),
+        'Procesador': (200.0, 'https://www.mercadolibre.com.ve/procesador-laptop'),
+        'Memoria RAM': (80.0, 'https://www.mercadolibre.com.ve/ram-laptop'),
+        'Almacenamiento SSD': (120.0, 'https://www.mercadolibre.com.ve/almacenamiento-laptop'),
+        'Tarjeta Gráfica': (300.0, 'https://www.mercadolibre.com.ve/tarjeta-grafica-laptop')
     },
     'televisor': {
-        'Pantalla': 200.0,
-        'Placa Base': 80.0,
-        'Fuente de Alimentación': 50.0,
-        'Altavoces': 30.0,
-        'Sintonizador': 40.0,
-        'Carcasa': 60.0
+        'Pantalla': (200.0, 'https://www.mercadolibre.com.ve/pantalla-televisor'),
+        'Placa Base': (80.0, 'https://www.mercadolibre.com.ve/placa-base-televisor'),
+        'Fuente de Alimentación': (50.0, 'https://www.mercadolibre.com.ve/fuente-televisor'),
+        'Altavoces': (30.0, 'https://www.mercadolibre.com.ve/altavoces-televisor'),
+        'Sintonizador': (40.0, 'https://www.mercadolibre.com.ve/sintonizador-televisor'),
+        'Carcasa': (60.0, 'https://www.mercadolibre.com.ve/carcasa-televisor')
     }
 }
 
@@ -32,10 +32,25 @@ def calcular_costo_dispositivo(dispositivo):
     if dispositivo in components_database:
         print(f"Componentes de {dispositivo.capitalize()}:")
         total = 0
-        for componente, precio in components_database[dispositivo].items():
+        for componente, (precio, link) in components_database[dispositivo].items():
             print(f"{componente}: ${precio}")
             total += precio
         print(f"\nCosto total de {dispositivo.capitalize()}: ${total}\n")
+
+        # Pregunta si desea comprar alguno de los componentes
+        desea_comprar = input("¿Desea comprar alguno de estos componentes? (1. Sí / 2. No): ")
+
+        if desea_comprar == '1':
+            print("\nEnlaces para comprar los componentes:")
+            for componente, (_, link) in components_database[dispositivo].items():
+                print(f"{componente}: {link}")
+            print("\nVolviendo al menú principal...\n")
+
+        elif desea_comprar == '2':
+            print("\nVolviendo al menú principal...\n")
+
+        else:
+            print("\nOpción no válida. Volviendo al menú principal...\n")
     else:
         print(f"El dispositivo '{dispositivo}' no está en la base de datos.\n")
 
@@ -44,7 +59,8 @@ def buscar_componente(componente):
     encontrado = False
     for dispositivo, componentes in components_database.items():
         if componente in componentes:
-            print(f"El componente '{componente}' está en '{dispositivo.capitalize()}' y cuesta ${componentes[componente]}")
+            precio, link = componentes[componente]
+            print(f"El componente '{componente}' está en '{dispositivo.capitalize()}' y cuesta ${precio} (Compra aquí: {link})")
             encontrado = True
     if not encontrado:
         print(f"El componente '{componente}' no se encuentra en la base de datos.\n")
@@ -76,4 +92,4 @@ def main():
             print("Opción no válida. Inténtalo de nuevo.\n")
 
 # Ejecutar el programa
-main()
+
